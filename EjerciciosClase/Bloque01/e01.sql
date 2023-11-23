@@ -6,15 +6,41 @@ DROP TABLE IF EXISTS PROFESORES;
 
 CREATE TABLE
     PROFESORES(
+        DNI INT(8) PRIMARY KEY,
         NOMBRE VARCHAR(255) UNIQUE,
         APELLIDO1 VARCHAR(255),
         APELLIDO2 VARCHAR(255),
-        DNI CHAR(9) PRIMARY KEY,
         DIRECCION VARCHAR(255),
         TITULO VARCHAR(255),
         GANA DECIMAL(7, 2) NOT NULL
 
 );
+
+CREATE TABLE
+    CURSOS(
+        COD_CURSO INT PRIMARY KEY,
+        NOMBRE_CURSO VARCHAR(255) UNIQUE,
+        DNI_PROFESOR INT(8),
+        MAXIMO_ALUMNOS INT,
+        FECHA_INICIO DATE,
+        FECHA_FIN DATE,
+        NUM_HORAS INT NOT NULL,
+        CHECK (FECHA_INICIO <= FECHA_FIN),
+        FOREIGN KEY (DNI_PROFESOR) REFERENCES PROFESORES(DNI)
+    );
+
+CREATE TABLE
+    ALUMNOS(
+        DNI INT(8) PRIMARY KEY,
+        NOMBRE VARCHAR(255),
+        APELLIDO1 VARCHAR(255),
+        APELLIDO2 VARCHAR(255),
+        DIRECCION VARCHAR(255),
+        SEXO CHAR(1) CHECK (SEXO IN ('M', 'H')),
+        FECHA_NACIMIENTO DATE,
+        CURSO INT,
+        FOREIGN KEY (CURSO) REFERENCES CURSOS(COD_CURSO)
+    );
 
 INSERT INTO
     PROFESORES(
@@ -30,31 +56,18 @@ VALUES (
         'Juan',
         'Arch',
         'López',
-        '32432455',
+        32432455,
         'Puerta Negra, 4',
         'Ing. Informática',
-        '7500'
+        7500
     ), (
         'María',
         'Oliva',
         'Rubio',
-        '43215643',
+        43215643,
         'Juan Alfonso 32',
         'Lda. Fil. Inglesa',
-        '5400'
-    );
-
-CREATE TABLE
-    CURSOS(
-        NOMBRE_CURSO VARCHAR(255) UNIQUE,
-        COD_CURSO INT PRIMARY KEY,
-        DNI_PROFESOR CHAR(9),
-        MAXIMO_ALUMNOS INT,
-        FECHA_INICIO DATE,
-        FECHA_FIN DATE,
-        NUM_HORAS INT NOT NULL,
-        CHECK (FECHA_INICIO <= FECHA_FIN),
-        FOREIGN KEY (DNI_PROFESOR) REFERENCES PROFESORES(DNI) ON DELETE CASCADE
+        5400
     );
 
 INSERT INTO
@@ -69,33 +82,20 @@ INSERT INTO
     )
 VALUES (
         'Inglés Básico',
-        '1',
+        1,
         '43215643',
-        '15',
+        5,
         '01-11-00',
         '22-12-00',
         '120'
     ), (
         'Administración Linux',
-        '2',
-        '32432455',
+        2,
+        32432455,
         NULL,
         '01-09-00',
         NULL,
-        '800'
-    );
-
-CREATE TABLE
-    ALUMNOS(
-        NOMBRE VARCHAR(255),
-        APELLIDO1 VARCHAR(255),
-        APELLIDO2 VARCHAR(255),
-        DNI CHAR(9) PRIMARY KEY,
-        DIRECCION VARCHAR(255),
-        SEXO CHAR(1) CHECK (SEXO IN ('M', 'H')),
-        FECHA_NACIMIENTO DATE,
-        CURSO INT,
-        FOREIGN KEY (CURSO) REFERENCES CURSOS(COD_CURSO) ON DELETE CASCADE
+        800
     );
 
 INSERT INTO
@@ -113,43 +113,43 @@ VALUES (
         'Lucas',
         'Manilva',
         'López',
-        '123523',
+        123523,
         'Alhamar 3',
         'H',
         '79-11-01',
-        '1'
+        1
     ), (
         'Antonia',
         'López',
         'Alcantara',
-        '2567567',
+        2567567,
         'Maniquí 21',
         'M',
         NULL,
-        '2'
+        2
     ), (
         'Manuel',
         'Alcantara',
         'Pedrós',
-        '3123689',
+        3123689,
         'Julian 2',
         NULL,
         NULL,
-        '2'
+        2
     ), (
         'José',
         'Pérez',
         'Caballar',
-        '4896765',
+        4896765,
         'Jarcha 5',
         'H',
         '77-02-03',
-        '1'
+        1
     ), (
         'Sergio',
         'Navas',
         'Retal',
-        '1235233',
+        1235233,
         NULL,
         'h',
         NULL,
