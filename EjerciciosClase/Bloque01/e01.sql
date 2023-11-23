@@ -54,7 +54,7 @@ CREATE TABLE
         FECHA_FIN DATE,
         NUM_HORAS INT NOT NULL,
         CHECK (FECHA_INICIO <= FECHA_FIN),
-        FOREIGN KEY (DNI_PROFESOR) REFERENCES PROFESORES(DNI)
+        FOREIGN KEY (DNI_PROFESOR) REFERENCES PROFESORES(DNI) ON DELETE CASCADE
     );
 
 INSERT INTO
@@ -219,24 +219,44 @@ ADD
  NULL
  ) */
 
-INSERT INTO
-    ALUMNOS(
-        NOMBRE,
-        APELLIDO1,
-        APELLIDO2,
-        DNI,
-        DIRECCION,
-        SEXO,
-        FECHA_NACIMIENTO,
-        CURSO
-    )
-VALUES (
-        'Maria',
-        'Jaén',
-        'Sevilla',
-        '789678',
-        'Martos 5',
-        'H',
-        '77-03-10',
-        '3'
-    );
+-- INSERT INTO
+
+--     ALUMNOS(
+
+--         NOMBRE,
+
+--         APELLIDO1,
+
+--         APELLIDO2,
+
+--         DNI,
+
+--         DIRECCION,
+
+--         SEXO,
+
+--         FECHA_NACIMIENTO,
+
+--         CURSO
+
+--     )
+
+-- VALUES (
+
+--         'Maria',
+
+--         'Jaén',
+
+--         'Sevilla',
+
+--         '789678',
+
+--         'Martos 5',
+
+--         'H',
+
+--         '77-03-10',
+
+--         '3'
+
+--     );
