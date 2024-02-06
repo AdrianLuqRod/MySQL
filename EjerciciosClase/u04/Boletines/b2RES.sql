@@ -131,7 +131,7 @@ where
 group by
     cl.cod_cliente;
 
-/*7. Para cada sucursal del banco se desea conocer su dirección, 
+/*7. Para cada sucursal del banco se desea conocer su dirección,
 el número de cuentas que
 tiene abiertas y la suma total que hay en ellas.*/
 select
