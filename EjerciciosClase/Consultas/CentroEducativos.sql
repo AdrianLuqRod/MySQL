@@ -1,0 +1,460 @@
+DROP TABLE MATRICULADO;
+
+DROP TABLE IMPARTE;
+
+DROP TABLE ASIGNATURA;
+
+DROP TABLE ALUMNO;
+
+DROP TABLE PROFESOR;
+
+DROP TABLE PROVINCIA;
+
+CREATE TABLE PROVINCIA (
+    ID_PROV INT(5), NOMBRE VARCHAR(100) NOT NULL, CONSTRAINT PK_PROVINCIA PRIMARY KEY (ID_PROV)
+);
+
+CREATE TABLE PROFESOR (
+    ID_PROF INT(5), NOMBRE VARCHAR(100) NOT NULL, APELLIDOS VARCHAR(100) NOT NULL, DNI VARCHAR(9) NOT NULL, NACIDO_EN INT(5), CONSTRAINT PK_PROFESOR PRIMARY KEY (ID_PROF), CONSTRAINT FK_PROFESOR_PROVINCIA FOREIGN KEY (NACIDO_EN) REFERENCES PROVINCIA (ID_PROV)
+);
+
+CREATE TABLE ALUMNO (
+    ID_ALUM INT(5), DNI VARCHAR(9) NOT NULL, NOMBRE VARCHAR(100) NOT NULL, APELLIDOS VARCHAR(100) NOT NULL, FECHA_NAC DATE, NACIDO_EN INT(5), CONSTRAINT PK_ALUMNO PRIMARY KEY (ID_ALUM), CONSTRAINT FK_ALUMNO_PROVICIA FOREIGN KEY (NACIDO_EN) REFERENCES PROVINCIA (ID_PROV)
+);
+
+CREATE TABLE ASIGNATURA (
+    ID_ASIG INT(5), NOMBRE VARCHAR(100) NOT NULL, CONSTRAINT PK_ASIGNATURA PRIMARY KEY (ID_ASIG)
+);
+
+CREATE TABLE IMPARTE (
+    ID_PROF INT(5) NOT NULL, ID_ASIG INT(5) NOT NULL, CONSTRAINT PK_IMPARTE PRIMARY KEY (ID_PROF, ID_ASIG), CONSTRAINT FK_IMPARTE_PROFESOR FOREIGN KEY (ID_PROF) REFERENCES PROFESOR (ID_PROF) ON DELETE CASCADE, CONSTRAINT FK_IMPARTE_ASIGNATURA FOREIGN KEY (ID_ASIG) REFERENCES ASIGNATURA (ID_ASIG) ON DELETE CASCADE
+);
+
+CREATE TABLE MATRICULADO (
+    ID_ALUM INT(5) NOT NULL, ID_ASIG INT(5) NOT NULL, NOTA1 DECIMAL(4, 2), NOTA2 DECIMAL(4, 2), NOTA3 DECIMAL(4, 2), CONSTRAINT PK_MATRICULADO PRIMARY KEY (ID_ALUM, ID_ASIG), CONSTRAINT FK_MATRICULADO_ASIGNATURA FOREIGN KEY (ID_ASIG) REFERENCES ASIGNATURA (ID_ASIG) ON DELETE CASCADE, CONSTRAINT FK_MATRICULADO_ALUMNO FOREIGN KEY (ID_ALUM) REFERENCES ALUMNO (ID_ALUM) ON DELETE CASCADE
+);
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (1, 'Almeria');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (2, 'Cadiz');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (3, 'Cordoba');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (4, 'Granada');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (5, 'Huelva');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (6, 'Jaen');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (7, 'Malaga');
+
+INSERT INTO PROVINCIA (ID_PROV, Nombre) VALUES (8, 'Sevilla');
+
+INSERT INTO
+    PROFESOR (
+        ID_PROF, Nombre, Apellidos, Nacido_en, dni
+    )
+VALUES (
+        1, 'Alvaro', 'Acebedo', 8, '78293485F'
+    );
+
+INSERT INTO
+    PROFESOR (
+        ID_PROF, Nombre, Apellidos, Nacido_en, dni
+    )
+VALUES (
+        2, 'Manuel', 'Gutierrez', 2, '69298485J'
+    );
+
+INSERT INTO
+    PROFESOR (
+        ID_PROF, Nombre, Apellidos, Nacido_en, dni
+    )
+VALUES (
+        3, 'Celia', 'Villa', 8, '23293465L'
+    );
+
+INSERT INTO
+    PROFESOR (
+        ID_PROF, Nombre, Apellidos, Nacido_en, dni
+    )
+VALUES (
+        4, 'Maria', 'Munioz', 3, '19298885N'
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        1, '28756358V', 'Juan', 'Veloso', '1977/02/11', 8
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        2, '28956157L', 'Sonia', 'Sanchez', '1981/08/24', 8
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        3, '27568011D', 'Cristina', 'Abascal', '1980/06/08', 2
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        4, '28754685C', 'Manuel', 'Perez', '1974/06/04', 8
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        5, '28546821Y', 'Manuel', 'Bueno', '1985/12/19', 2
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        6, '27656981Y', 'Jose Antonio', 'Montero', '1990/07/25', 3
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        7, '58324542B', 'Juan Jose', 'Sanchez', '1992/11/01', 2
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        8, '56846315M', 'Sandra', 'Valles', '1985/01/05', 3
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        9, '28468215X', 'Sara', 'Merida', '1986/09/09', 8
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        10, '27684214Z', 'Laura', 'Gutierrez', '1987/04/09', 8
+    );
+
+INSERT INTO
+    ALUMNO (
+        ID_ALUM, DNI, Nombre, Apellidos, FECHA_NAC, Nacido_en
+    )
+VALUES (
+        11, '28896443S', 'Inmaculada', 'Garcia', '1989/03/21', 8
+    );
+
+INSERT INTO ASIGNATURA (ID_ASIG, Nombre) VALUES (1, 'Redes');
+
+INSERT INTO ASIGNATURA (ID_ASIG, Nombre) VALUES (2, 'Sistemas');
+
+INSERT INTO ASIGNATURA (ID_ASIG, Nombre) VALUES (3, 'Ingles');
+
+INSERT INTO IMPARTE (ID_PROF, ID_ASIG) VALUES (1, 1);
+
+INSERT INTO IMPARTE (ID_PROF, ID_ASIG) VALUES (2, 1);
+
+INSERT INTO IMPARTE (ID_PROF, ID_ASIG) VALUES (3, 2);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (1, 1, 4, 6, 8);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (2, 1, 5, 5, 5);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (2, 3, 10, 9, 7);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (3, 1, 10, 8, 9);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (4, 1, 3, 3, 4);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (4, 3, 0, 0, 0);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (5, 1, 1, 4, 8);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (5, 3, 8, 4, 4);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (6, 1, 5, 2, 7);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (7, 1, 5, 5, 5);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (7, 2, 7, 5, 6);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (7, 3, 6, 7, 7);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (8, 1, 4, 6, 5);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (8, 2, 4, 5, 6);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (9, 2, 7, 7, 7);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (9, 3, 6, 7, 8);
+
+INSERT INTO
+    MATRICULADO (
+        ID_ALUM, ID_ASIG, Nota1, Nota2, Nota3
+    )
+VALUES (10, 2, 9, 5, 5);
+
+-- Ejericio 01
+SELECT NOMBRE FROM PROVINCIA;
+
+-- Ejercicio 02
+SELECT NOMBRE, APELLIDOS FROM ALUMNO;
+
+-- Ejercicio 03
+SELECT ID_ASIG, NOMBRE FROM ASIGNATURA;
+
+-- Ejercicio 04
+SELECT DNI, NOMBRE, APELLIDOS FROM PROFESOR ORDER BY DNI ASC;
+
+-- Ejercicio 05
+SELECT
+    DNI,
+    NOMBRE,
+    APELLIDOS,
+    FECHA_NAC AS 'Fecha_De_Nacimiento'
+from ALUMNO
+ORDER BY FECHA_NAC ASC;
+
+-- Ejercicio 06
+SELECT * FROM ALUMNO WHERE DNI = '56846315M';
+
+-- Ejercicio 07
+SELECT * FROM ALUMNO WHERE NACIDO_EN BETWEEN 3 AND 7;
+
+-- Ejercicio 08
+SELECT * FROM PROFESOR WHERE NACIDO_EN IN (1, 3, 5, 7);
+-- Ejercicio 09
+SELECT
+FROM ALUMNO
+WHERE
+    FECHA_NAC BETWEEN '1980-02-19' AND '1984-07-20';
+
+-- Ejercicio 10
+SELECT FROM MATRICULADO WHERE ID_ALUMN = 7;
+-- Ejercicio 11 // Se salta por ahora.
+
+-- Ejercicio 12
+SELECT * FROM ALUMNO WHERE DNI LIKE '%Y%';
+
+-- Ejercicio 13
+SELECT * FROM ALUMNO WHERE NOMBRE LIKE 'S%';
+
+-- Ejercicio 14
+SELECT NOMBRE
+FROM ALUMNO
+WHERE
+    NOMBRE LIKE '%N%'
+    AND NOMBRE LIKE '%n%';
+
+-- Ejercicio 15
+SELECT NOMBRE
+FROM ALUMNO
+WHERE
+    APELLIDOS LIKE '%Z%'
+    AND APELLIDOS LIKE '%z%';
+
+-- Ejercicio 16
+SELECT * FROM ALUMNO WHERE NOMBRE = 'Manuel';
+
+-- Ejercicio 17
+SELECT * FROM ALUMNO WHERE NOMBRE = 'Manuel' OR NOMBRE = 'Cristina';
+
+-- Ejercicio 18
+SELECT * FROM ALUMNO WHERE DNI LIKE '2%';
+
+-- Ejercicio 19
+SELECT DISTINCT NACIDO_EN FROM ALUMNO;
+
+-- Ejercicio 20
+SELECT *, ((NOTA1 + NOT2 + NOTA3) / 3) AS NOTA_MEDIA
+ORDER BY NOTA_MEDIA DESC;
+
+-- Ej 21
+SELECT *
+FROM MATRICULADO
+WHERE
+    ID_ASIG = 1
+    AND NOTA1 >= 5 NAD NOTA2 >= 5
+    AND NOTA3 >= 5;
+
+-- Ejercicio 21
+
+SELECT *
+FROM MATRICULADO
+WHERE
+    ID_ASIG = 1
+    AND NOTA1 > 5
+    AND NOTA2 > 5
+    AND NOTA3 > 5;
+
+-- Ejercicio 22
+SELECT *
+FROM MATRICULADO
+WHERE
+    NOTA1 = 10
+    OR NOTA2 = 10
+    OR NOTA3 = 10;
+
+-- Ejercicio 23
+SELECT *
+FROM MATRICULADO
+WHERE
+    ID_ASIG = 2
+    AND (
+        NOTA1 >= 5
+        OR NOTA2 >= 5
+        OR NOTA3 >= 5
+    );
+
+-- Ejercicio 24
+SELECT *
+FROM MATRICULADO
+WHERE
+    NOTA1 >= 5
+ORDER BY NOTA2 ASC, NOTA3 ASC;
+
+-- Ejercicio 25
+SELECT * FROM ALUMNO WHERE YEAR(FECHA_NAC) = '1985';
+
+-- Ejercicio 26
+SELECT min(nota1) from matriculado WHERE ID_ASIG = 1;
+
+--!!!!!!!!! BOLETIN 02
+--!!!!!!!!! BOLETIN 02
+--!!!!!!!!! BOLETIN 02
+--!!!!!!!!! BOLETIN 02
+--!!!!!!!!! BOLETIN 02
+
+-- Ejercicio 01
+
+-- Ejercicio 02
+
+-- Ejercicio 03
+
+-- Ejercicio 04
+
+-- Ejercicio 05
+
+-- Ejercicio 06
+
+-- Ejercicio 07
+
+-- Ejercicio 08
+
+-- Ejercicio 09
+
+-- Ejercicio 10
+
+-- Ejercicio 11
+
+-- Ejercicio 12
+
+-- Ejercicio 13
+
+-- Ejercicio 14
+
+-- Ejercicio 15
+
+-- Ejercicio 16
+
+-- Ejercicio 17
+
+-- Ejercicio 18
+
+-- Ejercicio 19
+
+-- Ejercicio 20
+
+-- Ejercicio 21
+
+-- Ejercicio 22
