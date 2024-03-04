@@ -184,29 +184,231 @@ WHERE
             )
     );
 --//-33. Obtener todos los pares de códigos de piezas suministradas por el mismo proveedor.
+SELECT V1.CODPIE, V2.CODPIE
+FROM VENTAS V1, VENTAS V2
+WHERE
+    V1.CODPIE != V2.CODPIE
+    AND V1.CODPRO = V2.CODPRO;
 --//-34. Obtener todos los pares de códigos de piezas suministradas por el mismo proveedor (eliminar pares repetidos).
+SELECT DISTINCT
+    V1.CODPIE,
+    V2.CODPIE
+FROM VENTAS V1, VENTAS V2
+WHERE
+    V1.CODPIE != V2.CODPIE
+    AND V1.CODPRO = V2.CODPRO;
 --//-35. Obtener para cada pieza suministrada a un proyecto, el código de pieza, el código de proyecto y la cantidad total correspondiente.
+SELECT CODPIE, CODPJ, SUM(CANTIDAD)
+FROM VENTAS
+GROUP BY
+    CODPIE,
+    CODPJ;
 --//-36. Obtener los códigos de proyectos y los códigos de piezas en los que la cantidad media suministrada a algún proyecto sea superior a 320.
+SELECT CODPJ, CODPIE
+FROM VENTAS
+GROUP BY
+    CODPIE,
+    CODPJ
+HAVING
+    AVG(CANTIDAD) > 320;
 --//-37. Obtener un listado ascendente de los nombres de todos los proveedores que hayan suministrado una cantidad superior a 100 de la pieza p1 . Los nombres deben aparecer en mayúsculas.
+SELECT UPPER(NOMPRO) AS NOMBRES
+FROM PROVEEDOR
+WHERE
+    CODPRO IN (
+        SELECT CODPRO
+        FROM VENTAS
+        WHERE
+            CODPIE LIKE 'P1'
+            AND CANTIDAD > 100
+    )
+ORDER BY NOMPRO ASC;
 --//-38. Obtener los nombres de los proyectos a los que suministra s1.
+SELECT NOMPJ
+FROM PROYECTO
+WHERE
+    CODPJ IN (
+        SELECT CODPJ
+        FROM VENTAS
+        WHERE
+            CODPRO IN (
+                SELECT CODPRO
+                FROM PROVEEDOR
+                WHERE
+                    CODPRO LIKE 'S1'
+            )
+    );
 --//-39. Obtener los colores de las piezas suministradas por s1.
+SELECT COLOR
+FROM PIEZA
+WHERE
+    CODPIE IN (
+        SELECT CODPIE
+        FROM VENTAS
+        WHERE
+            CODPRO LIKE 'S1'
+    );
 --//-40. Obtener los códigos de las piezas suministradas a cualquier proyecto de Londres.
+SELECT CODPIE
+FROM VENTAS
+WHERE
+    CODPJ IN (
+        SELECT CODPJ
+        FROM PROYECTO
+        WHERE
+            CIUDAD LIKE 'Londres'
+    );
 --//-41. Obtener los códigos de los proveedores con estado menor que el proveedor con código s1.
+SELECT CODPRO
+FROM PROVEEDOR PR1
+WHERE
+    EXISTS (
+        SELECT *
+        FROM PROVEEDOR PR2
+        WHERE
+            PR2.CODPRO LIKE 'S1'
+            AND PR1.STATUS > PR2.STATUS
+    );
 --//-42. Obtener los códigos de los proyectos que usen la pieza p1 en una cantidad media mayor que la mayor cantidad en la que cualquier pieza sea suministrada al proyecto j1.
---//-43. Obtener códigos de proveedores que suministren a algún proyecto la pieza p1 en una cantidad mayor que la cantidad media en la que se suministra la pieza pI a dicho proyecto.
+SELECT CODPJ
+FROM VENTAS
+WHERE
+    CODPIE LIKE 'P1'
+GROUP BY
+    CODPJ
+HAVING
+    AVG(CANTIDAD) > (
+        SELECT MAX(CANTIDAD)
+        FROM VENTAS
+        WHERE
+            CODPJ LIKE 'J1'
+    );
+--//-43. Obtener códigos de proveedores que suministren a algún proyecto la pieza p1 en una cantidad mayor que la cantidad media en la que se suministra la pieza p1 a dicho proyecto.
+SELECT CODPRO
+FROM VENTAS V1
+WHERE
+    CODPIE LIKE 'P1'
+    AND V1.CANTIDAD > ANY (
+        SELECT AVG(CANTIDAD)
+        FROM VENTAS V2
+        WHERE
+            V2.CODPIE LIKE 'P1'
+    );
+
 --//-44. Obtener los códigos de los proyectos que usen al menos una pieza suministrada por s1.
+SELECT CODPJ
+FROM VENTAS
+WHERE
+    CODPRO IN (
+        SELECT CODPRO
+        FROM PROVEEDOR
+        WHERE
+            CODPRO LIKE 'S1'
+    )
+GROUP BY
+    CODPJ;
 --//-45. Obtener los códigos de los proveedores que suministren al menos una pieza suministrada al menos por un proveedor que suministre al menos una pieza roja.
+
 --//-46. Obtener los codigos de las piezas suministradas a cualquier proyecto de Londres usando EXISTS.
+SELECT DISTINCT
+    CODPIE
+FROM VENTAS V
+WHERE
+    EXISTS (
+        SELECT *
+        FROM PROYECTO P
+        WHERE
+            CIUDAD LIKE 'Londres'
+            AND V.CODPJ = P.CODPJ
+    );
 --//-47. Obtener los códigos de los proyectos que usen al menos una pieza suministrada por s1 usando EXISTS.
+SELECT DISTINCT
+    CODPJ
+FROM PROYECTO P
+WHERE
+    EXISTS (
+        SELECT *
+        FROM VENTAS V
+        WHERE
+            CODPRO LIKE 'S1'
+            AND V.CODPJ = P.CODPJ
+    );
 --//-48. Obtener los códigos de los proyectos que no reciban ninguna pieza roja suministrada por algún proveedor de Londres.
+SELECT DISTINCT
+    CODPJ
+FROM PROYECTO PR
+WHERE
+    CODPJ NOT IN(
+        SELECT CODPJ
+        FROM VENTAS V
+            JOIN PROVEEDOR PRO ON V.CODPRO = PRO.CODPRO
+        WHERE
+            CIUDAD LIKE 'Londres'
+            AND CODPIE IN (
+                SELECT CODPIE
+                FROM PIEZA
+                WHERE
+                    COLOR LIKE 'Rojo'
+            )
+    );
 --//-49. Obtener los códigos de los proyectos suministrados únicamente por s1.
+
 --//-50. Obtener los códigos de las piezas suministradas a todos los proyectos en Londres.
+
 --//-51. Obtener los códigos de los proveedores que suministren la misma pieza todos a los proyectos.
 --//-52. Obtener los códigos de los proyectos que reciban al menos todas las piezas que suministra s1.
 --//-53. Cambiar el color de todas las piezas rojas a naranja.
 --//-54. Borrar todos los proyectos para los que no haya cargamentos.
+DELETE FROM PROYECTO WHERE CODPJ NOT IN( SELECT CODPJ FROM VENTAS );
 --//-55. Borrar todos los proyectos en Roma y sus correspondientes cargamentos.
---//-56. Insertar un nuevo suministrador s 10 en la tabla S. EI nombre y la ciudad son 'White'y ‘New York' respectivamente. El estado no se conoce todavía.
---//-57. Construir una tabla conteniendo una lista de los códigos de las piezas suministrada.s a proyectos en Londres o suministradas por un suministrador de Londres.
+DELETE FROM VENTAS
+WHERE
+    CODPJ IN (
+        SELECT CODPJ
+        FROM PROYECTO
+        WHERE
+            CIUDAD LIKE 'Roma'
+    );
+
+DELETE FROM PROYECTO WHERE CIUDAD LIKE 'Roma';
+--//-56. Insertar un nuevo suministrador s10 en la tabla Proveedor. El nombre y la ciudad son 'White'y ‘New York' respectivamente. El estado no se conoce todavía.
+INSERT INTO
+    PROVEEDOR (CODPRO, NOMPRO, CIUDAD)
+SELECT 'S10', 'White', 'New York';
+--//-57. Construir una tabla conteniendo una lista de los códigos de las piezas suministradas a proyectos en Londres o suministradas por un suministrador de Londres.
+CREATE TABLE EJ_57 AS
+SELECT DISTINCT
+    CODPIE
+FROM VENTAS
+WHERE
+    CODPRO IN (
+        SELECT CODPRO
+        FROM PROVEEDOR
+        WHERE
+            CIUDAD LIKE 'Londres'
+    )
+    OR CODPJ IN (
+        SELECT CODPJ
+        FROM PROYECTO
+        WHERE
+            CIUDAD LIKE 'Londres'
+    );
 --//-58. Construir una tabla conteniendo una lista de los códigos de los proyectos de Londres o que tengan algún suministrador de Londres.
+CREATE TABLE EJ_58 AS
+SELECT DISTINCT
+    CODPJ
+FROM VENTAS
+WHERE
+    CODPJ IN (
+        SELECT CODPJ
+        FROM PROYECTO
+        WHERE
+            CIUDAD LIKE 'Londres'
+    )
+    OR CODPRO IN (
+        SELECT CODPRO
+        FROM PROVEEDOR
+        WHERE
+            CIUDAD LIKE 'Londres'
+    );
 --//-59. Listar las tablas y secuencias definidas por el usuario ZEUS.
