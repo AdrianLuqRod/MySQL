@@ -1,3 +1,25 @@
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+-- !! ECHAR CUENTA DE SOLO LOS RESULTOS
+
 --//-1. Obtener todos los atributos de todos los proyectos.
 SELECT * FROM PROYECTO;
 --//-2. Obtener todos los atributos de todos los proyectos desarrollados en Londres.
@@ -269,6 +291,12 @@ WHERE
             PR2.CODPRO LIKE 'S1'
             AND PR1.STATUS > PR2.STATUS
     );
+-- ! IMPORTAMTE
+-- ! IMPORTAMTE
+-- ! IMPORTAMTE
+-- ! IMPORTAMTE
+-- ! IMPORTAMTE
+-- ! IMPORTAMTE
 --//-42. Obtener los códigos de los proyectos que usen la pieza p1 en una cantidad media mayor que la mayor cantidad en la que cualquier pieza sea suministrada al proyecto j1.
 SELECT CODPJ
 FROM VENTAS
@@ -352,6 +380,10 @@ WHERE
             )
     );
 --//-49. Obtener los códigos de los proyectos suministrados únicamente por s1.
+-- ! ESTE NI PUTO CASO
+-- ! ESTE NI PUTO CASO
+-- ! ESTE NI PUTO CASO
+-- ! ESTE NI PUTO CASO
 SELECT codpj
 FROM ventas
 GROUP BY
@@ -469,3 +501,28 @@ WHERE
             CIUDAD LIKE 'Londres'
     );
 --//-59. Listar las tablas y secuencias definidas por el usuario ZEUS.
+
+--- 60. Actualizar la cantidad en 1 unidad de las piezas suministradas a cualquier proyecto de Londres.ADD
+UPDATE VENTAS
+SET
+    CANTIDAD = CANTAIDAD + 1
+WHERE
+    CODPJ IN (
+        SELECT CODPJ
+        FROM PROYECTO
+        WHERE
+            CIUDAD LIKE 'Londres'
+    );
+
+-- ! DECIMALES PUNTO
+-- ! DECIMALES PUNTO
+-- ! DECIMALES PUNTO
+-- ! DECIMALES PUNTO
+-- ! DECIMALES PUNTO
+-- ! DECIMALES PUNTO
+
+-- ! NO CAE UNION
+-- ! NO CAE UNION
+-- ! NO CAE UNION
+-- ! NO CAE UNION
+-- ! NO CAE UNION
