@@ -352,12 +352,69 @@ WHERE
             )
     );
 --//-49. Obtener los códigos de los proyectos suministrados únicamente por s1.
-
+SELECT codpj
+FROM ventas
+GROUP BY
+    1
+HAVING
+    COUNT(DISTINCT codpro) = 1
+    AND MIN(codpro) = 'S1';
 --//-50. Obtener los códigos de las piezas suministradas a todos los proyectos en Londres.
-
+SELECT codpie
+FROM ventas
+WHERE
+    codpj IN (
+        SELECT codpj
+        FROM proyecto
+        WHERE
+            ciudad = 'Londres'
+    )
+GROUP BY
+    1
+HAVING
+    COUNT(DISTINCT codpj) = (
+        SELECT COUNT(*)
+        FROM proyecto
+        WHERE
+            ciudad = 'Londres'
+    );
 --//-51. Obtener los códigos de los proveedores que suministren la misma pieza todos a los proyectos.
+SELECT v1.codpro
+FROM ventas v1
+WHERE
+    NOT EXISTS (
+        SELECT codpj
+        FROM proyecto p
+        WHERE
+            NOT EXISTS (
+                SELECT v2.codpro
+                FROM ventas v2
+                WHERE
+                    v1.codpro = v2.codpro
+                    AND v1.codpie = v2.codpie
+                    AND v2.codpj = p.codpj
+            )
+    );
 --//-52. Obtener los códigos de los proyectos que reciban al menos todas las piezas que suministra s1.
+SELECT DISTINCT
+    v1.codpj
+FROM ventas v1
+WHERE
+    NOT EXISTS (
+        SELECT *
+        FROM ventas v2
+        WHERE
+            NOT EXISTS (
+                SELECT *
+                FROM ventas v3
+                WHERE
+                    v1.codpj = v3.codpj
+                    AND v2.codpie = v3.codpie
+            )
+    )
+    AND codpro = 'S1';
 --//-53. Cambiar el color de todas las piezas rojas a naranja.
+UPDATE pieza SET color = 'Naranja' WHERE color = 'Rojo';
 --//-54. Borrar todos los proyectos para los que no haya cargamentos.
 DELETE FROM PROYECTO WHERE CODPJ NOT IN( SELECT CODPJ FROM VENTAS );
 --//-55. Borrar todos los proyectos en Roma y sus correspondientes cargamentos.
