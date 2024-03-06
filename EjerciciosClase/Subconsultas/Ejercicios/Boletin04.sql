@@ -1,14 +1,5 @@
 --//-1. Muestra todos los campos de las películas de Animación.
-SELECT *
-FROM PELICULA
-WHERE
-    GENERO IN (
-        SELECT GENERO
-        FROM PELICULA
-        WHERE
-            GENERO = 'Animacion'
-    );
-
+SELECT * FROM PELICULA WHERE GENERO LIKE 'ANIMACION';
 --//-2. Muestra código de copias, estado, código de película, título, duración, género, año y precio.
 SELECT
     ID_COPIA,
@@ -19,9 +10,14 @@ SELECT
     GENERO,
     ANYO,
     PRECIO_ALQUILER
-FROM COPIA_PELICULA CP
-    JOIN PELICULA P ON CP.PELICULA = P.CODIGO;
-
+FROM COPIA_PELICULA CP, PELICULA PEL
+WHERE
+    CODIGO IN (
+        SELECT PELICULA
+        FROM COPIA_PELICULA
+        WHERE
+            PEL.CODIGO = CP.PELICULA
+    );
 --//-3. Muestra codigo de copias, estado, código de película, título, duración, género, año y precio de las películas que cuestan menos de 2.50.
 SELECT
     ID_COPIA,
@@ -32,23 +28,21 @@ SELECT
     GENERO,
     ANYO,
     PRECIO_ALQUILER
-FROM COPIA_PELICULA CP
-    JOIN PELICULA P ON CP.PELICULA = P.CODIGO
+FROM PELICULA PEL, COPIA_PELICULA CP
 WHERE
-    EXISTS (
-        SELECT *
+    CP.PELICULA IN (
+        SELECT PEL.CODIGO
         FROM PELICULA
-        HAVING
-            PRECIO_ALQUILER < 2.50
+        WHERE
+            PEL.PRECIO_ALQUILER < 2.50
     );
-
 --//-4. Comprueba que todas las películas tienen copias.
-SELECT ID_COPIA
-FROM COPIA_PELICULA
+SELECT CODIGO
+FROM PELICULA
 WHERE
-    PELICULA NOT IN(
-        SELECT CODIGO
-        FROM PELICULA
+    CODIGO NOT IN(
+        SELECT PELICULA
+        FROM COPIA_PELICULA
     );
 
 --//-5. Comprueba que están los datos de las películas de las copias que tenemos.
@@ -61,44 +55,41 @@ WHERE
     );
 
 --//-6. Muestra el nombre y los apellidos de los socios que han alquilado la película 113.
-SELECT NOMBRE, CONCAT(APELLIDO1, " ", APELLIDO2) AS APELLIDOS
-FROM SOCIO S
+SELECT CONCAT(
+        NOMBRE, ' ', APELLIDO1, ' ', APELLIDO2
+    ) AS NOMBRE_COMPLETO
+FROM SOCIO
 WHERE
-    EXISTS (
-        SELECT *
-        FROM ALQUILER AL
+    NUM_SOCIO IN (
+        SELECT SOCIO
+        FROM ALQUILER
         WHERE
-            S.NUM_SOCIO = AL.SOCIO
-            AND COPIA_PEL = 113
+            COPIA_PEL LIKE '113'
     );
-
 --//-7. Muestra el nombre y los apellidos de los socios alguna vez han alquilado una película en diciembre.
-SELECT NOMBRE, CONCAT(APELLIDO1, " ", APELLIDO2) AS APELLIDOS
-FROM SOCIO S
+SELECT CONCAT(
+        NOMBRE, ' ', APELLIDO1, ' ', APELLIDO2
+    ) AS NOMBRE_COMPLETO
+FROM SOCIO
 WHERE
-    EXISTS (
-        SELECT *
-        FROM ALQUILER AL
+    NUM_SOCIO IN (
+        SELECT SOCIO
+        FROM ALQUILER
         WHERE
-            S.NUM_SOCIO = AL.SOCIO
-            AND MONTH(FEC_ALQUILA) = 12
+            MONTH(FEC_ALQUILA) = '12'
     );
-
 --//-8. Muestra el nombre y los apellidos de los socios que siempre han devuelto la película el día 30.
 --//. En principio ninguno cumple esta norma, pero ajustamos la tabla para que de 1 resultado:
 --//. UPDATE ALQUILER
 --//. SET fec_devolucion = '2014-12-30'
 --//. WHERE socio = 1006;
-SELECT NOMBRE, CONCAT(APELLIDO1, " ", APELLIDO2) AS APELLIDOS
+SELECT S.nombre, S.apellido1, S.apellido2
 FROM SOCIO S
 WHERE
     30 = ALL (
-        SELECT DAY(FEC_DEVOLUCION)
+        SELECT DAY(AL.FEC_DEVOLUCION)
         FROM ALQUILER AL
-        WHERE
-            S.NUM_SOCIO = AL.SOCIO
     );
-
 --//-9. Muestra el código de la película, el título, el código de la copia y el número de veces alquilada esa copia.
 SELECT
     CODIGO,
@@ -133,7 +124,6 @@ WHERE
                     )
             )
     );
-
 --//-11. Muestra el título de la película con la fecha de comienzo de alquiler con el formato 01/february/2023 como fecha alquiler.
 SELECT DISTINCT
     TITULO,
@@ -149,7 +139,7 @@ ORDER BY TITULO;
 --//-12. Muestra el titulo de la pelicula y los días que han estado alquiladas como días alquilada.
 SELECT DISTINCT
     TITULO,
-    DATEDIFF(FEC_DEVOLUCION, FEC_ALQUILA) AS 'DIAS_ALQUILADA'
+    DATEDIFF(FEC_DEVOLUCION, FEC_ALQUILA) AS DIAS_ALQUILADA
 FROM
     PELICULA P
     JOIN COPIA_PELICULA CP ON P.CODIGO = CP.PELICULA
@@ -168,7 +158,7 @@ WHERE
         SELECT CODIGO
         FROM PELICULA
         WHERE
-            PRECIO_ALQUILER < 2.5
+            PRECIO_ALQUILER < 2.50
     );
 --//-ALTERNATIVA (15). Mostrar el código de socio que han alquilado alguna película cuyo precio de alquiler sea menor que 2.50 euros, usando solamente subconsultas.
 SELECT NUM_SOCIO
@@ -186,14 +176,12 @@ WHERE
                         SELECT CODIGO
                         FROM PELICULA
                         WHERE
-                            PRECIO_ALQUILER < 2.5
+                            PRECIO_ALQUILER < 2.50
                     )
             )
     );
 --//-ALTERNATIVA (16). Mostrar el nombre de los socios que han alquilado alguna película cuyo precio de alquiler sea menor que 2.50 euros, usando solamente subconsultas.
-SELECT CONCAT(
-        NOMBRE, " ", APELLIDO1, " ", APELLIDO2
-    ) AS NOMBRE_COMPLETO
+SELECT NOMBRE
 FROM SOCIO
 WHERE
     NUM_SOCIO IN (
@@ -208,30 +196,28 @@ WHERE
                         SELECT CODIGO
                         FROM PELICULA
                         WHERE
-                            PRECIO_ALQUILER < 2.5
+                            PRECIO_ALQUILER < 2.50
                     )
             )
     );
 --//-ALTERNATIVA (17). Crea una vista con la consulta anterior.
 CREATE VIEW SOCIOS_ESPECIALES AS
-SELECT CONCAT(
-        nombre, ' ', apellido1, ' ', apellido2
-    ) AS nombre_completo
+SELECT NOMBRE
 FROM SOCIO
 WHERE
-    num_socio IN (
-        SELECT socio
+    NUM_SOCIO IN (
+        SELECT SOCIO
         FROM ALQUILER
         WHERE
-            copia_pel IN (
-                SELECT id_copia
+            COPIA_PEL IN (
+                SELECT ID_COPIA
                 FROM COPIA_PELICULA
                 WHERE
-                    pelicula IN (
-                        SELECT codigo
+                    PELICULA IN (
+                        SELECT CODIGO
                         FROM PELICULA
                         WHERE
-                            precio_alquiler < 2.5
+                            PRECIO_ALQUILER < 2.50
                     )
             )
     );
@@ -242,7 +228,7 @@ WHERE
         SELECT NUM_SOCIO
         FROM SOCIO
         WHERE
-            POBLACION = 'Roquetas de Mar'
+            POBLACION LIKE 'Roquetas de Mar'
     );
 --//-ALTERNATIVA (19). Inserta un socio que es hermano gemelo del socio que aún no ha devuelto alguna película. Su nombre es Manuel y su número de socio será A01.
 INSERT INTO
@@ -250,35 +236,40 @@ INSERT INTO
 SELECT
     'A01',
     'Manuel',
-    apellido1,
-    apellido2,
-    telefono,
-    domicilio,
-    poblacion,
-    fec_nac
+    APELLIDO1,
+    APELLIDO2,
+    TELEFONO,
+    DOMICILIO,
+    POBLACION,
+    FEC_NAC
 FROM SOCIO
-    JOIN ALQUILER ON num_socio = socio
 WHERE
-    fec_devolucion IS NULL;
+    NUM_SOCIO IN (
+        SELECT SOCIO
+        FROM ALQUILER
+        WHERE
+            FEC_DEVOLUCION IS NULL
+    );
 --//-ALTERNATIVA (20). Siguiendo con el apartado anterior, resulta que son trillizos y queremos dar de alta a la tercera hermana. La nueva socia tendrá el mismo número
 --//-                  que el del socio que aún no ha alquilado una película con una C al final y se llama Luisa.
 INSERT INTO
     SOCIO
 SELECT
-    CONCAT(num_socio, 'C'),
+    CONCAT(NUM_SOCIO, 'C'),
     'Luisa',
-    apellido1,
-    apellido2,
-    telefono,
-    domicilio,
-    poblacion,
-    fec_nac
+    APELLIDO1,
+    APELLIDO2,
+    TELEFONO,
+    DOMICILIO,
+    POBLACION,
+    FEC_NAC
 FROM SOCIO
 WHERE
     NUM_SOCIO NOT IN(
         SELECT SOCIO
         FROM ALQUILER
     );
+
 --//-ALTERNATIVA (21). Borra los alquileres de los socios que han alquilado una película de terror.
 DELETE FROM ALQUILER
 WHERE
@@ -304,44 +295,40 @@ WHERE
         SELECT COPIA_PEL
         FROM ALQUILER
         WHERE
+            COPIA_PEL IN (
+                SELECT PELICULA
+                FROM COPIA_PELICULA
+                WHERE
+                    PELICULA IN (
+                        SELECT CODIGO
+                        FROM PELICULA
+                        WHERE
+                            GENERO LIKE 'Animacion'
+                    )
+            )
+            OR SOCIO IN (
+                SELECT NUM_SOCIO
+                FROM SOCIO
+                WHERE
+                    NOMBRE LIKE '_a%'
+            )
+    );
+--//-ALTERNATIVA (23). Muestra código de copias, estado, código de película, título, duración, género, año y precio que han sido alquiladas por el socio cuyo nombre
+--//-                  acabe en 'A' (con y sin subconsultas).
+SELECT CP.id_copia, CP.estado, PEL.codigo, PEL.titulo, PEL.duracion, PEL.genero, PEL.anyo, PEL.precio_alquiler
+FROM
+    PELICULA PEL
+    JOIN COPIA_PELICULA CP ON PEL.CODIGO = CP.PELICULA
+WHERE
+    ID_COPIA IN (
+        SELECT COPIA_PEL
+        FROM ALQUILER
+        WHERE
             SOCIO IN (
                 SELECT NUM_SOCIO
                 FROM SOCIO
                 WHERE
-                    NOMBRE LIKE '_A%'
-            )
-    )
-    OR PELICULA IN (
-        SELECT CODIGO
-        FROM PELICULA
-        WHERE
-            GENERO LIKE 'Animacion'
-    );
---//-ALTERNATIVA (23). Muestra código de copias, estado, código de película, título, duración, género, año y precio que han sido alquiladas por el socio cuyo nombre
---//-                  acabe en 'A' (con y sin subconsultas).
-
-SELECT
-    id_copia,
-    estado,
-    codigo,
-    titulo,
-    duracion,
-    genero,
-    anyo,
-    precio_alquiler
-FROM
-    PELICULA
-    JOIN COPIA_PELICULA ON codigo = pelicula
-WHERE
-    id_copia IN (
-        SELECT copia_pel
-        FROM ALQUILER
-        WHERE
-            socio IN (
-                SELECT num_socio
-                FROM SOCIO
-                WHERE
-                    nombre LIKE '%A'
+                    NOMBRE LIKE '%a'
             )
     );
 
@@ -364,14 +351,18 @@ WHERE
 --//-ALTERNATIVA (24). Crea una tabla de socios pendientes de devolver películas, incluyendo NOMBRE (nombre + apellidos), TELEFONO (telefono) y DOMICILIO (poblacion [domicilio]).
 CREATE TABLE SOCIOS_PENDIENTES AS
 SELECT CONCAT(
-        NOMBRE, " ", APELLIDO1, " ", APELLIDO2
+        NOMBRE, ' ', APELLIDO1, ' ', APELLIDO2
     ) AS NOMBRE, TELEFONO, CONCAT(
-        POBLACION, "[", DOMICILIO, "]"
+        POBLACION, '[', DOMICILIO, ']'
     ) AS DOMICILIO
 FROM SOCIO
-    JOIN ALQUILER ON NUM_SOCIO = SOCIO
 WHERE
-    FEC_DEVOLUCION IS NULL;
+    NUM_SOCIO IN (
+        SELECT SOCIO
+        FROM ALQUILER
+        WHERE
+            FEC_DEVOLUCION IS NULL
+    );
 --//-ALTERNATIVA (25). Incrementa 50 céntimos el precio de la película más alquilada.
 UPDATE PELICULA
 SET
